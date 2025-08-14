@@ -13,7 +13,7 @@ MIN_ETH_AMOUNT = 0.00015  # Minimum ETH to send
 MAX_ETH_AMOUNT = 0.0002  # Maximum ETH to send
 
 #Sleep time
-sleep_time = random.randint(1,10)
+sleep_time = random.randint(1, 10)
 
 # EIP-1559 Gas Settings
 MAX_PRIORITY_FEE_MULTIPLIER = 0.1  # Multiplier for priority fee (tip)
