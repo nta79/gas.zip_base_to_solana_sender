@@ -6,18 +6,25 @@ import time
 from web3 import Web3
 from eth_account import Account
 
-# Configuration
-BASE_CHAIN_ID = 8453  # Base
-SOLANA_CHAIN_ID = 501474  # Solana (Gas.zip uses this ID for Solana)
-GAS_ZIP_API_BASE_URL = "https://backend.gas.zip/v2"
+#=========================================================================
 
 # ETH Amount Settings (in ETH)
 MIN_ETH_AMOUNT = 0.00015  # Minimum ETH to send
 MAX_ETH_AMOUNT = 0.0002  # Maximum ETH to send
 
+#Sleep time
+sleep_time = random.randint(1,10)
+
 # EIP-1559 Gas Settings
 MAX_PRIORITY_FEE_MULTIPLIER = 0.1  # Multiplier for priority fee (tip)
 MAX_FEE_MULTIPLIER = 2.0  # Multiplier for max fee per gas
+
+#=========================================================================
+
+# Configuration
+BASE_CHAIN_ID = 8453  # Base
+SOLANA_CHAIN_ID = 501474  # Solana (Gas.zip uses this ID for Solana)
+GAS_ZIP_API_BASE_URL = "https://backend.gas.zip/v2"
 
 # Read private key
 try:
@@ -347,8 +354,8 @@ for i, solana_wallet in enumerate(SOLANA_WALLETS):
 
     # Add delay between transactions to avoid rate limiting
     if i < len(SOLANA_WALLETS) - 1:
-        print("Waiting 10 seconds before next transaction...")
-        time.sleep(10)
+        print(f"Waiting {sleep_time} seconds before next transaction...")
+        time.sleep(sleep_time)
 
 # Save results to file
 output_file = "bridge_results.json"
