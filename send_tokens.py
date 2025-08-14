@@ -1,3 +1,4 @@
+import os
 import random
 import json
 import requests
@@ -11,12 +12,12 @@ SOLANA_CHAIN_ID = 501474  # Solana (Gas.zip uses this ID for Solana)
 GAS_ZIP_API_BASE_URL = "https://backend.gas.zip/v2"
 
 # ETH Amount Settings (in ETH)
-MIN_ETH_AMOUNT = 0.00012  # Minimum ETH to send
+MIN_ETH_AMOUNT = 0.00015  # Minimum ETH to send
 MAX_ETH_AMOUNT = 0.0002  # Maximum ETH to send
 
 # EIP-1559 Gas Settings
 MAX_PRIORITY_FEE_MULTIPLIER = 0.1  # Multiplier for priority fee (tip)
-MAX_FEE_MULTIPLIER = 2  # Multiplier for max fee per gas
+MAX_FEE_MULTIPLIER = 2.0  # Multiplier for max fee per gas
 
 # Read private key
 try:
@@ -144,7 +145,7 @@ def send_bridge_transaction(private_key, sender_address, amount_eth, inbound_add
 
     # Calculate estimated transaction cost
     estimated_gas_cost_wei = gas_limit * max_fee_per_gas
-    estimated_gas_cost_eth = web3.from_wei(estimated_gas_cost_wei, 'ether')
+    estimated_gas_cost_eth = float(web3.from_wei(estimated_gas_cost_wei, 'ether'))
     total_cost_eth = amount_eth + estimated_gas_cost_eth
 
     print(f"  Estimated Gas Cost: {estimated_gas_cost_eth:.8f} ETH")
@@ -227,6 +228,12 @@ if not inbound_address_base:
 
 print(f"Using Gas.zip inbound address: {inbound_address_base}")
 print(f"Processing {len(SOLANA_WALLETS)} Solana wallets...")
+print(f"\n💰 ETH Amount Configuration:")
+print(f"  Minimum ETH per transaction: {MIN_ETH_AMOUNT} ETH")
+print(f"  Maximum ETH per transaction: {MAX_ETH_AMOUNT} ETH")
+print(f"\n⛽ Gas Configuration (EIP-1559):")
+print(f"  Priority Fee Multiplier: {MAX_PRIORITY_FEE_MULTIPLIER}x")
+print(f"  Max Fee Multiplier: {MAX_FEE_MULTIPLIER}x")
 
 for i, solana_wallet in enumerate(SOLANA_WALLETS):
     print(f"\n{'=' * 60}")
@@ -242,8 +249,10 @@ for i, solana_wallet in enumerate(SOLANA_WALLETS):
         })
         continue
 
-    # Random ETH amount between 0.001 and 0.005 ETH
-    eth_amount = random.uniform(0.001, 0.005)
+    # Random ETH amount between configured min and max
+    eth_amount = random.uniform(MIN_ETH_AMOUNT, MAX_ETH_AMOUNT)
+    eth_amount = max(eth_amount, MIN_ETH_AMOUNT)  # Ensure minimum
+    eth_amount = min(eth_amount, MAX_ETH_AMOUNT)  # Ensure maximum
     print(f"Planning to send {eth_amount:.6f} ETH from Base to Solana wallet: {solana_wallet}")
 
     # Get calldata and quote for bridging
